@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class OrganizerDTO extends UserDTO{
-    //@NotNull(message = "companyName cant be null")  خطأ لانه بستعمل SINGLE_TABLE
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String companyName;
 

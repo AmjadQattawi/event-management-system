@@ -5,18 +5,17 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
 
-    <!-- ==================== SEQUENCES ==================== -->
     <changeSet id="1" author="amjad">
+
+        <!-- ==================== SEQUENCES ==================== -->
         <createSequence sequenceName="USER_SEQ" startValue="1" incrementBy="1"/>
         <createSequence sequenceName="CATEGORY_SEQ" startValue="1" incrementBy="1"/>
         <createSequence sequenceName="EVENT_SEQ" startValue="1" incrementBy="1"/>
         <createSequence sequenceName="BOOKING_SEQ" startValue="1" incrementBy="1"/>
         <createSequence sequenceName="PAYMENT_SEQ" startValue="1" incrementBy="1"/>
         <createSequence sequenceName="REVIEW_SEQ" startValue="1" incrementBy="1"/>
-    </changeSet>
 
-    <!-- ==================== CATEGORY ==================== -->
-    <changeSet id="2" author="amjad">
+        <!-- ==================== CATEGORY ==================== -->
         <createTable tableName="CATEGORY">
             <column name="ID" type="NUMBER(19)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -28,10 +27,8 @@
             <column name="CREATED_AT" type="TIMESTAMP"/>
             <column name="UPDATED_AT" type="TIMESTAMP"/>
         </createTable>
-    </changeSet>
 
-    <!-- ==================== USERS_TBL (User / Attendee / Organizer / Admin - SINGLE_TABLE) ==================== -->
-    <changeSet id="3" author="amjad">
+        <!-- ==================== USERS ==================== -->
         <createTable tableName="USERS_TBL">
             <column name="ID" type="NUMBER(19)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -50,17 +47,13 @@
             </column>
             <column name="PHONE" type="VARCHAR2(50)"/>
             <column name="USER_STATUS" type="VARCHAR2(50)" defaultValue="ACTIVE"/>
-            <!-- Attendee specific -->
             <column name="REWARD_POINTS" type="NUMBER" defaultValueNumeric="0"/>
-            <!-- Organizer specific -->
             <column name="COMPANY_NAME" type="VARCHAR2(255)"/>
             <column name="CREATED_AT" type="TIMESTAMP"/>
             <column name="UPDATED_AT" type="TIMESTAMP"/>
         </createTable>
-    </changeSet>
 
-    <!-- ==================== EVENT ==================== -->
-    <changeSet id="4" author="amjad">
+        <!-- ==================== EVENT ==================== -->
         <createTable tableName="EVENT">
             <column name="ID" type="NUMBER(19)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -95,10 +88,8 @@
             <column name="CREATED_AT" type="TIMESTAMP"/>
             <column name="UPDATED_AT" type="TIMESTAMP"/>
         </createTable>
-    </changeSet>
 
-    <!-- ==================== ORGANIZER_EVENTS (ManyToMany) ==================== -->
-    <changeSet id="5" author="amjad">
+        <!-- ==================== ORGANIZER_EVENTS ==================== -->
         <createTable tableName="ORGANIZER_EVENTS">
             <column name="EVENT_ID" type="NUMBER(19)">
                 <constraints nullable="false"
@@ -113,13 +104,12 @@
                              referencedColumnNames="ID"/>
             </column>
         </createTable>
+
         <addPrimaryKey tableName="ORGANIZER_EVENTS"
                        columnNames="EVENT_ID, ORGANIZER_ID"
                        constraintName="PK_ORGANIZER_EVENTS"/>
-    </changeSet>
 
-    <!-- ==================== BOOKING ==================== -->
-    <changeSet id="6" author="amjad">
+        <!-- ==================== BOOKING ==================== -->
         <createTable tableName="BOOKING">
             <column name="ID" type="NUMBER(19)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -144,10 +134,8 @@
             <column name="CREATED_AT" type="TIMESTAMP"/>
             <column name="UPDATED_AT" type="TIMESTAMP"/>
         </createTable>
-    </changeSet>
 
-    <!-- ==================== PAYMENT ==================== -->
-    <changeSet id="7" author="amjad">
+        <!-- ==================== PAYMENT ==================== -->
         <createTable tableName="PAYMENT">
             <column name="ID" type="NUMBER(19)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -171,10 +159,8 @@
             <column name="CREATED_AT" type="TIMESTAMP"/>
             <column name="UPDATED_AT" type="TIMESTAMP"/>
         </createTable>
-    </changeSet>
 
-    <!-- ==================== REVIEW ==================== -->
-    <changeSet id="8" author="amjad">
+        <!-- ==================== REVIEW ==================== -->
         <createTable tableName="REVIEW">
             <column name="ID" type="NUMBER(19)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -197,6 +183,7 @@
             <column name="CREATED_AT" type="TIMESTAMP"/>
             <column name="UPDATED_AT" type="TIMESTAMP"/>
         </createTable>
+
     </changeSet>
 
 </databaseChangeLog>

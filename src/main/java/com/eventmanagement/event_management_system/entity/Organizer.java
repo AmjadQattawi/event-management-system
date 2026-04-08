@@ -15,7 +15,6 @@ import java.util.List;
 @Entity
 public class Organizer extends User{
 
-    //@Column(nullable = false)
     private String companyName;
 
 
