@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <!-- ==================== SEQUENCES ==================== -->
+    <changeSet id="1" author="amjad">
+        <createSequence sequenceName="USER_SEQ" startValue="1" incrementBy="1"/>
+        <createSequence sequenceName="CATEGORY_SEQ" startValue="1" incrementBy="1"/>
+        <createSequence sequenceName="EVENT_SEQ" startValue="1" incrementBy="1"/>
+        <createSequence sequenceName="BOOKING_SEQ" startValue="1" incrementBy="1"/>
+        <createSequence sequenceName="PAYMENT_SEQ" startValue="1" incrementBy="1"/>
+        <createSequence sequenceName="REVIEW_SEQ" startValue="1" incrementBy="1"/>
+    </changeSet>
+
+    <!-- ==================== CATEGORY ==================== -->
+    <changeSet id="2" author="amjad">
+        <createTable tableName="CATEGORY">
+            <column name="ID" type="NUMBER(19)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR2(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR2(1000)"/>
+            <column name="CREATED_AT" type="TIMESTAMP"/>
+            <column name="UPDATED_AT" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <!-- ==================== USERS_TBL (User / Attendee / Organizer / Admin - SINGLE_TABLE) ==================== -->
+    <changeSet id="3" author="amjad">
+        <createTable tableName="USERS_TBL">
+            <column name="ID" type="NUMBER(19)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="USER_TYPE" type="VARCHAR2(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR2(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EMAIL" type="VARCHAR2(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="PASSWORD" type="VARCHAR2(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PHONE" type="VARCHAR2(50)"/>
+            <column name="USER_STATUS" type="VARCHAR2(50)" defaultValue="ACTIVE"/>
+            <!-- Attendee specific -->
+            <column name="REWARD_POINTS" type="NUMBER" defaultValueNumeric="0"/>
+            <!-- Organizer specific -->
+            <column name="COMPANY_NAME" type="VARCHAR2(255)"/>
+            <column name="CREATED_AT" type="TIMESTAMP"/>
+            <column name="UPDATED_AT" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <!-- ==================== EVENT ==================== -->
+    <changeSet id="4" author="amjad">
+        <createTable tableName="EVENT">
+            <column name="ID" type="NUMBER(19)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR2(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR2(2000)"/>
+            <column name="START_DATE" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="END_DATE" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LOCATION" type="VARCHAR2(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PRICE" type="NUMBER(19,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CAPACITY" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EVENT_STATUS" type="VARCHAR2(50)" defaultValue="DRAFT"/>
+            <column name="CATEGORY_ID" type="NUMBER(19)">
+                <constraints foreignKeyName="FK_EVENT_CATEGORY"
+                             referencedTableName="CATEGORY"
+                             referencedColumnNames="ID"/>
+            </column>
+            <column name="TEMPERATURE" type="NUMBER(10,2)"/>
+            <column name="WINDSPEED" type="NUMBER(10,2)"/>
+            <column name="CREATED_AT" type="TIMESTAMP"/>
+            <column name="UPDATED_AT" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <!-- ==================== ORGANIZER_EVENTS (ManyToMany) ==================== -->
+    <changeSet id="5" author="amjad">
+        <createTable tableName="ORGANIZER_EVENTS">
+            <column name="EVENT_ID" type="NUMBER(19)">
+                <constraints nullable="false"
+                             foreignKeyName="FK_ORGEV_EVENT"
+                             referencedTableName="EVENT"
+                             referencedColumnNames="ID"/>
+            </column>
+            <column name="ORGANIZER_ID" type="NUMBER(19)">
+                <constraints nullable="false"
+                             foreignKeyName="FK_ORGEV_USER"
+                             referencedTableName="USERS_TBL"
+                             referencedColumnNames="ID"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="ORGANIZER_EVENTS"
+                       columnNames="EVENT_ID, ORGANIZER_ID"
+                       constraintName="PK_ORGANIZER_EVENTS"/>
+    </changeSet>
+
+    <!-- ==================== BOOKING ==================== -->
+    <changeSet id="6" author="amjad">
+        <createTable tableName="BOOKING">
+            <column name="ID" type="NUMBER(19)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NUMBER_OF_TICKETS" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="NUMBER(19)"/>
+            <column name="TOTAL_PRICE" type="NUMBER(19,2)"/>
+            <column name="BOOKING_STATUS" type="VARCHAR2(50)" defaultValue="PENDING"/>
+            <column name="BOOKING_DATE" type="TIMESTAMP"/>
+            <column name="ATTENDEE_ID" type="NUMBER(19)">
+                <constraints foreignKeyName="FK_BOOKING_ATTENDEE"
+                             referencedTableName="USERS_TBL"
+                             referencedColumnNames="ID"/>
+            </column>
+            <column name="EVENT_ID" type="NUMBER(19)">
+                <constraints foreignKeyName="FK_BOOKING_EVENT"
+                             referencedTableName="EVENT"
+                             referencedColumnNames="ID"/>
+            </column>
+            <column name="CREATED_AT" type="TIMESTAMP"/>
+            <column name="UPDATED_AT" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <!-- ==================== PAYMENT ==================== -->
+    <changeSet id="7" author="amjad">
+        <createTable tableName="PAYMENT">
+            <column name="ID" type="NUMBER(19)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="AMOUNT" type="NUMBER(19,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAYMENT_DATE" type="TIMESTAMP"/>
+            <column name="PAYMENT_METHOD" type="VARCHAR2(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAYMENT_STATUS" type="VARCHAR2(50)" defaultValue="PENDING">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BOOKING_ID" type="NUMBER(19)">
+                <constraints unique="true"
+                             foreignKeyName="FK_PAYMENT_BOOKING"
+                             referencedTableName="BOOKING"
+                             referencedColumnNames="ID"/>
+            </column>
+            <column name="CREATED_AT" type="TIMESTAMP"/>
+            <column name="UPDATED_AT" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <!-- ==================== REVIEW ==================== -->
+    <changeSet id="8" author="amjad">
+        <createTable tableName="REVIEW">
+            <column name="ID" type="NUMBER(19)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="RATING" type="NUMBER"/>
+            <column name="REVIEW_COMMENT" type="VARCHAR2(2000)"/>
+            <column name="REVIEW_DATE" type="TIMESTAMP"/>
+            <column name="ATTENDEE_ID" type="NUMBER(19)">
+                <constraints nullable="false"
+                             foreignKeyName="FK_REVIEW_ATTENDEE"
+                             referencedTableName="USERS_TBL"
+                             referencedColumnNames="ID"/>
+            </column>
+            <column name="EVENT_ID" type="NUMBER(19)">
+                <constraints nullable="false"
+                             foreignKeyName="FK_REVIEW_EVENT"
+                             referencedTableName="EVENT"
+                             referencedColumnNames="ID"/>
+            </column>
+            <column name="CREATED_AT" type="TIMESTAMP"/>
+            <column name="UPDATED_AT" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
