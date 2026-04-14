@@ -41,6 +41,11 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(400).body(ex.getMessage());
 }
 
+@ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<String> handleUserNotFound(UserNotFoundException ex){
+    return ResponseEntity.status(404).body(ex.getMessage());
+}
+
 
 
 }

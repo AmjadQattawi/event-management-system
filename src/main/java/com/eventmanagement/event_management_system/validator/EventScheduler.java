@@ -14,11 +14,11 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class EventSchedulerService {
+public class EventScheduler {
 
     private final EventRepository eventRepository;
 
-    @Scheduled(cron = "0 0 * * * *") // Every hour
+    @Scheduled(cron = "${event.update.cron}") // Every hour
     @Transactional
     public void updateCompletedEvents() {
         LocalDateTime now = LocalDateTime.now();

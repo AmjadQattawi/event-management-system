@@ -2,6 +2,7 @@ package com.eventmanagement.event_management_system.service;
 
 import com.eventmanagement.event_management_system.dto.AdminDTO;
 import com.eventmanagement.event_management_system.entity.Admin;
+import com.eventmanagement.event_management_system.enums.Role;
 import com.eventmanagement.event_management_system.enums.UserStatus;
 import com.eventmanagement.event_management_system.exception.ResourceNotFoundException;
 import com.eventmanagement.event_management_system.interfaceService.IAdminService;
@@ -10,6 +11,7 @@ import com.eventmanagement.event_management_system.repository.AdminRepository;
 import com.eventmanagement.event_management_system.searchCriteria.AdminSearchCriteria;
 import com.eventmanagement.event_management_system.specification.AdminSpecification;
 import jakarta.transaction.Transactional;
+import org.hibernate.cache.cfg.internal.AbstractDomainDataCachingConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +37,8 @@ public class AdminService implements IAdminService {
         if (admin.getUserStatus() == null) {
             admin.setUserStatus(UserStatus.ACTIVE);
         }
-         adminRepository.save(admin);
+//        admin.setRole(Role.ADMIN);
+        adminRepository.save(admin);
         return adminMapper.toDTO(admin);
     }
 
@@ -88,6 +91,7 @@ public class AdminService implements IAdminService {
         Page<Admin> page1 = adminRepository.findAll(specification, pageable);
         return page1.map(adminMapper::toDTO);
     }
+
 
 
 }

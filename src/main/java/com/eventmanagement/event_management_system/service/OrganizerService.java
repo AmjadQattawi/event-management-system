@@ -3,6 +3,7 @@ package com.eventmanagement.event_management_system.service;
 import com.eventmanagement.event_management_system.dto.OrganizerDTO;
 import com.eventmanagement.event_management_system.entity.Organizer;
 import com.eventmanagement.event_management_system.entity.Payment;
+import com.eventmanagement.event_management_system.enums.Role;
 import com.eventmanagement.event_management_system.enums.UserStatus;
 import com.eventmanagement.event_management_system.exception.ResourceNotFoundException;
 import com.eventmanagement.event_management_system.interfaceService.IOrganizerService;
@@ -35,6 +36,7 @@ public class OrganizerService implements IOrganizerService {
     public OrganizerDTO create(OrganizerDTO organizerDTO) {
         Organizer organizer=organizerMapper.toEntity(organizerDTO);
         organizer.setUserStatus(UserStatus.ACTIVE);
+//        organizer.setRole(Role.ORGANIZER);
         Organizer saved=organizerRepository.save(organizer);
         return organizerMapper.toDTO(saved);
     }

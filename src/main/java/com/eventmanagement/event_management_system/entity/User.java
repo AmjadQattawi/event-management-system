@@ -1,5 +1,6 @@
 package com.eventmanagement.event_management_system.entity;
 
+import com.eventmanagement.event_management_system.enums.Role;
 import com.eventmanagement.event_management_system.enums.UserStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -32,4 +33,6 @@ public abstract class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus=UserStatus.ACTIVE;
 
+//    @Enumerated(EnumType.STRING)
+//    private Role role;
 }

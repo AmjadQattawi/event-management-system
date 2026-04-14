@@ -3,6 +3,7 @@ package com.eventmanagement.event_management_system.service;
 import com.eventmanagement.event_management_system.dto.AttendeeDTO;
 import com.eventmanagement.event_management_system.entity.Attendee;
 import com.eventmanagement.event_management_system.entity.Booking;
+import com.eventmanagement.event_management_system.enums.Role;
 import com.eventmanagement.event_management_system.enums.UserStatus;
 import com.eventmanagement.event_management_system.exception.ResourceNotFoundException;
 import com.eventmanagement.event_management_system.interfaceService.IAttendeeService;
@@ -39,6 +40,7 @@ public class AttendeeService implements IAttendeeService {
         if (attendee.getRewardPoints() == null) {
             attendee.setRewardPoints(0);
         }
+//        attendee.setRole(Role.ATTENDEE);
         Attendee saved=attendeeRepository.save(attendee);
         return attendeeMapper.toDTO(saved);
     }

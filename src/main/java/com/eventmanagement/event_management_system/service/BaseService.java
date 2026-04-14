@@ -15,5 +15,4 @@ public interface BaseService <D,ID>{
     Page<D> search( criteria, int page, int size);
 */
 
-
 }

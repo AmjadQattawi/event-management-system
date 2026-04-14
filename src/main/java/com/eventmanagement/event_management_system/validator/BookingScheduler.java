@@ -9,6 +9,7 @@ import com.eventmanagement.event_management_system.repository.BookingRepository;
 import com.eventmanagement.event_management_system.repository.EventRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -18,13 +19,17 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class BookingScheduler {
-     private final EventRepository eventRepository;
+    private final EventRepository eventRepository;
     private final BookingRepository bookingRepository;
 
-    @Scheduled(fixedRate = 60000) // Every minute
+    @Value("${booking.expiration.minutes:15}")
+    private int expirationMinutes;
+
+
+    @Scheduled(fixedRateString = "${booking.cancel.rate}")// Every minute
     @Transactional
     public void cancelExpiredBookings() {
-        LocalDateTime expirationTime = LocalDateTime.now().minusMinutes(15);
+        LocalDateTime expirationTime = LocalDateTime.now().minusMinutes(expirationMinutes);
 
         List<Booking> expiredBookings = bookingRepository
                 .findAllByBookingStatusAndCreatedAtBefore(BookingStatus.PENDING, expirationTime);

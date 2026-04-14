@@ -30,6 +30,4 @@ public class BookingDTO extends BaseDTO {
     @NotNull
     private Long eventId;
 
-
-
 }

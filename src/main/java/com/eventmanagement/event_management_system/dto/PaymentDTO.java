@@ -25,5 +25,4 @@ public class PaymentDTO extends BaseDTO{
     private PaymentStatus paymentStatus;
 
     private Long bookingId;
-
 }

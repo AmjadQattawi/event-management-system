@@ -1,9 +1,7 @@
 package com.eventmanagement.event_management_system.service;
 
-import com.eventmanagement.event_management_system.dto.EventDTO;
 import com.eventmanagement.event_management_system.dto.PaymentDTO;
 import com.eventmanagement.event_management_system.entity.Booking;
-import com.eventmanagement.event_management_system.entity.Organizer;
 import com.eventmanagement.event_management_system.entity.Payment;
 import com.eventmanagement.event_management_system.enums.BookingStatus;
 import com.eventmanagement.event_management_system.enums.EventStatus;
@@ -15,31 +13,20 @@ import com.eventmanagement.event_management_system.interfaceService.IPaymentServ
 import com.eventmanagement.event_management_system.mapper.PaymentMapper;
 import com.eventmanagement.event_management_system.repository.BookingRepository;
 import com.eventmanagement.event_management_system.repository.PaymentRepository;
-import com.eventmanagement.event_management_system.searchCriteria.EventSearchCriteria;
 import com.eventmanagement.event_management_system.searchCriteria.PaymentSearchCriteria;
-import com.eventmanagement.event_management_system.specification.EventSpecification;
-import com.eventmanagement.event_management_system.specification.OrganizerSpecification;
 import com.eventmanagement.event_management_system.specification.PaymentSpecification;
-import com.eventmanagement.event_management_system.specification.ReviewSpecification;
+import com.eventmanagement.event_management_system.validator.PaymentNotificationService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class paymentService implements IPaymentService {
@@ -52,18 +39,7 @@ public class paymentService implements IPaymentService {
     private BookingRepository bookingRepository;
 
     @Autowired
-    private RestTemplate restTemplate;
-
-    @Value("${BREVO_API_KEY}")
-    private String apiKey;
-
-    @Value("${BREVO_SENDER_EMAIL}")
-    private String senderEmail;
-
-    @Value("${brevo.sender.name}")
-    private String senderName;
-
-
+    private PaymentNotificationService paymentNotificationService;
 
     @Override
     @Transactional
@@ -89,7 +65,7 @@ public class paymentService implements IPaymentService {
         booking.getAttendee().setRewardPoints(currentPoints + pointsToAdd);
         payment.setBooking(booking);
         Payment saved=paymentRepository.save(payment);
-        sendEmail(paymentDTO);
+        paymentNotificationService.sendEmail(paymentDTO);
         return paymentMapper.toDTO(saved);
 
     }
@@ -171,27 +147,5 @@ public class paymentService implements IPaymentService {
         return page1.map(paymentMapper::toDTO);
     }
 
-
-
-
-    public void sendEmail(PaymentDTO paymentDTO){
-        String url = "https://api.brevo.com/v3/smtp/email";
-        Booking booking = bookingRepository.findById(paymentDTO.getBookingId())
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
-        String toEmail=booking.getAttendee().getEmail();
-        String toName=booking.getAttendee().getName();
-
-        HttpHeaders httpHeaders= new HttpHeaders();
-        httpHeaders.set("api-key",apiKey.trim());
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        Map<String, Object> body = new HashMap<>();
-        body.put("sender", Map.of("name", senderName, "email", senderEmail));
-        body.put("to", List.of(Map.of("email", toEmail)));
-        body.put("subject", "Payment Successful");
-        body.put("htmlContent", "<h1>Payment completed!</h1>");
-
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, httpHeaders);
-        restTemplate.postForObject(url,request,String.class);
-    }
 
 }

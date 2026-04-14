@@ -1,5 +1,6 @@
 package com.eventmanagement.event_management_system.dto;
 
+import com.eventmanagement.event_management_system.enums.Role;
 import com.eventmanagement.event_management_system.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,6 +26,8 @@ public class UserDTO extends BaseDTO{
     private String phone;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UserStatus userStatus;
+
+//    private Role role;
 
 
 }
