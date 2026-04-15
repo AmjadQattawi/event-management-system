@@ -17,7 +17,7 @@ import com.eventmanagement.event_management_system.searchCriteria.PaymentSearchC
 import com.eventmanagement.event_management_system.specification.PaymentSpecification;
 import com.eventmanagement.event_management_system.validator.PaymentNotificationService;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,17 +29,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class paymentService implements IPaymentService {
+@RequiredArgsConstructor
+public class PaymentService implements IPaymentService {
 
-    @Autowired
-    private PaymentRepository paymentRepository;
-    @Autowired
-    private PaymentMapper paymentMapper;
-    @Autowired
-    private BookingRepository bookingRepository;
-
-    @Autowired
-    private PaymentNotificationService paymentNotificationService;
+    private final PaymentRepository paymentRepository;
+    private final PaymentMapper paymentMapper;
+    private final BookingRepository bookingRepository;
+    private final PaymentNotificationService paymentNotificationService;
 
     @Override
     @Transactional

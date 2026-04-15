@@ -19,6 +19,7 @@ import com.eventmanagement.event_management_system.searchCriteria.ReviewSearchCr
 import com.eventmanagement.event_management_system.specification.PaymentSpecification;
 import com.eventmanagement.event_management_system.specification.ReviewSpecification;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,16 +31,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ReviewService implements IReviewService {
 
-    @Autowired
-    private ReviewRepository reviewRepository;
-    @Autowired
-    private ReviewMapper reviewMapper;
-    @Autowired
-    private EventRepository eventRepository;
-    @Autowired
-    private AttendeeRepository attendeeRepository;
+    private final ReviewRepository reviewRepository;
+    private final ReviewMapper reviewMapper;
+    private final EventRepository eventRepository;
+    private final AttendeeRepository attendeeRepository;
 
     @Override
     @Transactional

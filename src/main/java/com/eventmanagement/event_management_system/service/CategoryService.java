@@ -12,6 +12,7 @@ import com.eventmanagement.event_management_system.repository.CategoryRepository
 import com.eventmanagement.event_management_system.searchCriteria.CategorySearchCriteria;
 import com.eventmanagement.event_management_system.specification.CategorySpecification;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.data.domain.Page;
@@ -25,15 +26,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryService implements ICategoryService {
 
-    @Autowired
-    private CategoryRepository categoryRepository;
 
-    @Autowired
-    private CategoryMapper categoryMapper;
-    @Autowired
-    private CategoryDetailedMapper categoryDetailedMapper;
+    private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
+    private final CategoryDetailedMapper categoryDetailedMapper;
 
     @Transactional
     @Override

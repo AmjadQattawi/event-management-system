@@ -2,8 +2,6 @@ package com.eventmanagement.event_management_system.service;
 
 import com.eventmanagement.event_management_system.dto.AttendeeDTO;
 import com.eventmanagement.event_management_system.entity.Attendee;
-import com.eventmanagement.event_management_system.entity.Booking;
-import com.eventmanagement.event_management_system.enums.Role;
 import com.eventmanagement.event_management_system.enums.UserStatus;
 import com.eventmanagement.event_management_system.exception.ResourceNotFoundException;
 import com.eventmanagement.event_management_system.interfaceService.IAttendeeService;
@@ -12,7 +10,7 @@ import com.eventmanagement.event_management_system.repository.AttendeeRepository
 import com.eventmanagement.event_management_system.searchCriteria.AttendeeSearshCriteria;
 import com.eventmanagement.event_management_system.specification.AttendeeSpecification;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,12 +21,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AttendeeService implements IAttendeeService {
 
-    @Autowired
-    private AttendeeRepository attendeeRepository;
-    @Autowired
-    private AttendeeMapper attendeeMapper;
+
+    private final AttendeeRepository attendeeRepository;
+
+    private final AttendeeMapper attendeeMapper;
 
     @Override
     @Transactional

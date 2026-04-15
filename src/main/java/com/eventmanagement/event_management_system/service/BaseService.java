@@ -11,8 +11,5 @@ public interface BaseService <D,ID>{
     void delete(ID id);
     Page<D> findByPage(int page, int size, String sortBy, String direction);
 
-/*
-    Page<D> search( criteria, int page, int size);
-*/
 
 }

@@ -2,7 +2,6 @@ package com.eventmanagement.event_management_system.service;
 
 import com.eventmanagement.event_management_system.dto.AdminDTO;
 import com.eventmanagement.event_management_system.entity.Admin;
-import com.eventmanagement.event_management_system.enums.Role;
 import com.eventmanagement.event_management_system.enums.UserStatus;
 import com.eventmanagement.event_management_system.exception.ResourceNotFoundException;
 import com.eventmanagement.event_management_system.interfaceService.IAdminService;
@@ -11,8 +10,7 @@ import com.eventmanagement.event_management_system.repository.AdminRepository;
 import com.eventmanagement.event_management_system.searchCriteria.AdminSearchCriteria;
 import com.eventmanagement.event_management_system.specification.AdminSpecification;
 import jakarta.transaction.Transactional;
-import org.hibernate.cache.cfg.internal.AbstractDomainDataCachingConfig;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,12 +21,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AdminService implements IAdminService {
 
-    @Autowired
-    private AdminRepository adminRepository;
-    @Autowired
-    private AdminMapper adminMapper;
+
+    private final AdminRepository adminRepository;
+
+    private final AdminMapper adminMapper;
 
     @Override
     @Transactional

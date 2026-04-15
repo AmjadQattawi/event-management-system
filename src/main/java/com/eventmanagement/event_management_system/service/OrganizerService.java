@@ -2,8 +2,6 @@ package com.eventmanagement.event_management_system.service;
 
 import com.eventmanagement.event_management_system.dto.OrganizerDTO;
 import com.eventmanagement.event_management_system.entity.Organizer;
-import com.eventmanagement.event_management_system.entity.Payment;
-import com.eventmanagement.event_management_system.enums.Role;
 import com.eventmanagement.event_management_system.enums.UserStatus;
 import com.eventmanagement.event_management_system.exception.ResourceNotFoundException;
 import com.eventmanagement.event_management_system.interfaceService.IOrganizerService;
@@ -12,7 +10,7 @@ import com.eventmanagement.event_management_system.repository.OrganizerRepositor
 import com.eventmanagement.event_management_system.searchCriteria.OrganizerSearchCriteria;
 import com.eventmanagement.event_management_system.specification.OrganizerSpecification;
 import jakarta.transaction.Transactional;
-import org.aspectj.weaver.ast.Or;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,12 +22,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class OrganizerService implements IOrganizerService {
 
-    @Autowired
-    private OrganizerRepository organizerRepository;
-    @Autowired
-    private OrganizerMapper organizerMapper;
+    private final OrganizerRepository organizerRepository;
+    private final OrganizerMapper organizerMapper;
 
     @Override
     @Transactional

@@ -22,6 +22,7 @@ import com.eventmanagement.event_management_system.searchCriteria.EventSearchCri
 import com.eventmanagement.event_management_system.specification.EventSpecification;
 import com.eventmanagement.event_management_system.validator.EventValidator;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,22 +36,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class EventService implements IEventService {
 
-    @Autowired
-    private EventRepository eventRepository;
-    @Autowired
-    private EventMapper eventMapper;
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
-    private OrganizerRepository organizerRepository;
-    @Autowired
-    private EventValidator eventValidator;
-    @Autowired
-    private EventWithOrganizersMapper eventWithOrganizersMapper;
-    @Autowired
-    private RestTemplate restTemplate;
+    private final EventRepository eventRepository;
+    private final EventMapper eventMapper;
+    private final CategoryRepository categoryRepository;
+    private final OrganizerRepository organizerRepository;
+    private final EventValidator eventValidator;
+    private final EventWithOrganizersMapper eventWithOrganizersMapper;
+    private final RestTemplate restTemplate;
 
     @Override
     @Transactional
