@@ -52,8 +52,6 @@ public class EventService implements IEventService {
     @Autowired
     private RestTemplate restTemplate;
 
-
-
     @Override
     @Transactional
     public EventDTO create(EventDTO eventDTO) {

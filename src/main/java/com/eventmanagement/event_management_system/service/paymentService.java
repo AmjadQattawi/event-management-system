@@ -47,7 +47,7 @@ public class paymentService implements IPaymentService {
         Booking booking=bookingRepository.findById(paymentDTO.getBookingId())
            .orElseThrow(()->new ResourceNotFoundException("Booking not found with id: "+ paymentDTO.getBookingId()));
         Payment payment=paymentMapper.toEntity(paymentDTO);
-         if (payment.getAmount()!=(booking.getTotalPrice())){
+         if (!payment.getAmount().equals(booking.getTotalPrice())){
             payment.setPaymentStatus(PaymentStatus.FAILED);
          }
         if (booking.getBookingStatus()== BookingStatus.CANCELLED){

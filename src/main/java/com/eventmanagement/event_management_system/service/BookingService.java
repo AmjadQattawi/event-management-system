@@ -1,11 +1,9 @@
 package com.eventmanagement.event_management_system.service;
 
-import com.eventmanagement.event_management_system.dto.AttendeeDTO;
 import com.eventmanagement.event_management_system.dto.BookingDTO;
 import com.eventmanagement.event_management_system.entity.Attendee;
 import com.eventmanagement.event_management_system.entity.Booking;
 import com.eventmanagement.event_management_system.entity.Event;
-import com.eventmanagement.event_management_system.entity.Organizer;
 import com.eventmanagement.event_management_system.enums.BookingStatus;
 import com.eventmanagement.event_management_system.enums.PaymentStatus;
 import com.eventmanagement.event_management_system.exception.ResourceNotFoundException;
@@ -18,35 +16,27 @@ import com.eventmanagement.event_management_system.repository.AttendeeRepository
 import com.eventmanagement.event_management_system.repository.BookingRepository;
 import com.eventmanagement.event_management_system.repository.EventRepository;
 import jakarta.transaction.Transactional;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class BookingService implements IBookingService {
 
-    @Autowired
-    private BookingRepository bookingRepository;
-    @Autowired
-    private BookingMapper bookingMapper;
-    @Autowired
-    private EventRepository eventRepository;
-    @Autowired
-    private BookingValidator bookingValidator;
-    @Autowired
-    private AttendeeRepository attendeeRepository;
+    private final BookingRepository bookingRepository;
+    private final BookingMapper bookingMapper;
+    private final EventRepository eventRepository;
+    private final BookingValidator bookingValidator;
+    private final AttendeeRepository attendeeRepository;
 
     @Override
     @Transactional
     public BookingDTO create(BookingDTO bookingDTO){
         //check ids
-        Event event=eventRepository.findById(bookingDTO.getEventId())
+        Event event=eventRepository.findByIdWithLock(bookingDTO.getEventId())
                 .orElseThrow(()->new ResourceNotFoundException("Event not found with id: "+bookingDTO.getEventId()));
         Attendee attendee=attendeeRepository.findById(bookingDTO.getAttendeeId())
                 .orElseThrow(()->new ResourceNotFoundException("Attendee not found with id: "+bookingDTO.getAttendeeId()));
@@ -55,9 +45,9 @@ public class BookingService implements IBookingService {
         bookingValidator.checkExistsByAttendeeIdAndEventId(bookingDTO);
         bookingValidator.validateCapacity(bookingDTO,event);
         Booking booking=bookingMapper.toEntity(bookingDTO);
-        booking.setTotalPrice
-                (bookingValidator.getTotalPrice(bookingDTO.getNumberOfTickets(),event.getPrice()));
+        booking.setTotalPrice(bookingDTO.getNumberOfTickets() * event.getPrice());
         event.setCapacity(event.getCapacity()-booking.getNumberOfTickets());
+        eventRepository.save(event);
         booking.setBookingStatus(BookingStatus.PENDING);
         booking.setEvent(event);
         booking.setAttendee(attendee);
@@ -83,7 +73,7 @@ public class BookingService implements IBookingService {
     public BookingDTO update(Long id, BookingDTO bookingDTO) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + id));
-        Event event = eventRepository.findById(bookingDTO.getEventId())
+        Event event = eventRepository.findByIdWithLock(bookingDTO.getEventId())
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
         Attendee attendee = attendeeRepository.findById(bookingDTO.getAttendeeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Attendee not found"));
@@ -104,7 +94,7 @@ public class BookingService implements IBookingService {
             }
         }
 
-        booking.setTotalPrice(bookingValidator.getTotalPrice(bookingDTO.getNumberOfTickets(), event.getPrice()));
+        booking.setTotalPrice(bookingDTO.getNumberOfTickets() * event.getPrice());
         booking.setEvent(event);
         booking.setAttendee(attendee);
         return bookingMapper.toDTO(bookingRepository.save(booking));
@@ -128,8 +118,7 @@ public class BookingService implements IBookingService {
         if (booking.getPayment() != null) {
             booking.getPayment().setBooking(null);
         }
-
-        bookingRepository.delete(booking);
+        booking.setBookingStatus(BookingStatus.DELETED);
     }
 
 

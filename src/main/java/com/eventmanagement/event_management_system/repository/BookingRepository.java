@@ -12,13 +12,14 @@ import java.util.List;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking,Long>, JpaSpecificationExecutor<Booking> {
 
-    Boolean existsByAttendeeIdAndEventIdAndBookingStatusNot(
+    Boolean existsByAttendeeIdAndEventIdAndBookingStatusNotAndBookingStatusNot(
             Long attendeeId,
             Long eventId,
-            BookingStatus bookingStatus
+            BookingStatus bookingStatus,
+            BookingStatus bookingStatus2
     );
-    List<Booking> findAllByBookingStatusAndCreatedAtBefore(BookingStatus status, LocalDateTime dateTime);
 
+    List<Booking> findAllByBookingStatusAndCreatedAtBefore(BookingStatus status, LocalDateTime dateTime);
 
 
 }

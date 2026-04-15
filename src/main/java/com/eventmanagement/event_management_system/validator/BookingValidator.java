@@ -28,16 +28,13 @@ public class BookingValidator {
             throw new InsufficientCapacityException("There are no seats remaining for this number (no capacity) ");
     }
 
-    public Double getTotalPrice(Integer numberOfTickets,Double price){
-        return numberOfTickets*price;
-    }
-
 
     public void checkExistsByAttendeeIdAndEventId(BookingDTO bookingDTO) {
-        if (bookingRepository.existsByAttendeeIdAndEventIdAndBookingStatusNot(
+        if (bookingRepository.existsByAttendeeIdAndEventIdAndBookingStatusNotAndBookingStatusNot(
                 bookingDTO.getAttendeeId(),
                 bookingDTO.getEventId(),
-                BookingStatus.CANCELLED
+                BookingStatus.CANCELLED,
+                BookingStatus.DELETED
         ))
             throw new DuplicateResourceException("You already booked this event");
         }
