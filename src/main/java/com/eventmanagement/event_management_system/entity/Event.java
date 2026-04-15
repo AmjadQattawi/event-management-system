@@ -7,8 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.math.BigDecimal;
+import org.hibernate.annotations.SoftDelete;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @SequenceGenerator(name = "base_seq", sequenceName = "EVENT_SEQ", allocationSize = 1)
+@SoftDelete
 public class Event extends BaseEntity{
 
     @Column(nullable = false,unique = true)
@@ -42,17 +42,17 @@ public class Event extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private EventStatus eventStatus=EventStatus.DRAFT;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Category category;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "organizer_events",
             joinColumns =@JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "organizer_id")
     )
     private List<Organizer> organizers=new ArrayList<>();
 
-    @OneToMany(mappedBy = "event",orphanRemoval = true)
+    @OneToMany(mappedBy = "event",cascade = CascadeType.ALL)
     private List<Booking> booking=new ArrayList<>();
 
     @OneToMany(mappedBy = "event",cascade = CascadeType.ALL, orphanRemoval = true)

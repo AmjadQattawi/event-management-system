@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SoftDelete;
 
 @Getter
 @Setter
@@ -16,6 +17,7 @@ import lombok.Setter;
 @DiscriminatorColumn(name = "user_type")
 @Entity
 @Table(name = "USERS_TBL")
+@SoftDelete
 @SequenceGenerator(name = "base_seq", sequenceName = "User_SEQ", allocationSize = 1)
 public abstract class User extends BaseEntity {
 

@@ -73,12 +73,7 @@ public class AttendeeService implements IAttendeeService {
     public void delete(Long id) {
         Attendee attendee=attendeeRepository.findById(id)
             .orElseThrow(()->new ResourceNotFoundException("Attendee not found with id:"+id));
-        if (attendee.getBookings() != null) {
-            for (Booking booking : attendee.getBookings()) {
-                booking.setAttendee(null);
-            }
-        }
-        attendeeRepository.deleteById(id);
+        attendeeRepository.delete(attendee);
     }
 
 

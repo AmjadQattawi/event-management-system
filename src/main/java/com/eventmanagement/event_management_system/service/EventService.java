@@ -146,7 +146,6 @@ public class EventService implements IEventService {
     public void delete(Long id) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found with id: " + id));
-        if (event.getEventStatus() == EventStatus.DRAFT || event.getEventStatus() == EventStatus.PUBLISHED) {
             if (event.getBooking() != null) {
                 for (Booking b : event.getBooking()) {
                     if (b.getBookingStatus() == BookingStatus.CONFIRMED ||
@@ -158,15 +157,7 @@ public class EventService implements IEventService {
                     }
                 }
             }
-        }
-        if (event.getReviews() != null) {
-            for (Review reviews : event.getReviews()) {
-                event.setReviews(null);
-            }
-        }
-        if (event.getOrganizers()!=null){
-            throw new IllegalStatusException("event cannot be deleted due to the presence of organizers.");
-        }
+        eventRepository.saveAndFlush(event);
         eventRepository.delete(event);
     }
 

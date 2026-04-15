@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 @SequenceGenerator(name = "base_seq", sequenceName = "Review_SEQ", allocationSize = 1)
 public class Review extends BaseEntity{
 
-
     private Integer rating;
     @Column(name = "REVIEW_COMMENT")
     private String comment;
@@ -25,11 +24,11 @@ public class Review extends BaseEntity{
     @Column(updatable = false)
     private LocalDateTime reviewDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "attendee_id", nullable = false)
     private Attendee attendee;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 

@@ -74,9 +74,9 @@ public class CategoryService implements ICategoryService {
     public void delete(Long id){
         Category category=categoryRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Category not found with id: "+ id));
-        if (categoryRepository.existsByEventsId(id))
+        if (categoryRepository.existsByEventsNotEmpty (id))
           throw new IllegalStatusException("This section cannot be deleted! There are currently events associated with it.");
-        categoryRepository.deleteById(id);
+        categoryRepository.delete(category);
     }
 
     @Override

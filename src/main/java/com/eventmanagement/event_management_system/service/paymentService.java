@@ -47,18 +47,18 @@ public class paymentService implements IPaymentService {
         Booking booking=bookingRepository.findById(paymentDTO.getBookingId())
            .orElseThrow(()->new ResourceNotFoundException("Booking not found with id: "+ paymentDTO.getBookingId()));
         Payment payment=paymentMapper.toEntity(paymentDTO);
-         if (!payment.getAmount().equals(booking.getTotalPrice())){
-            payment.setPaymentStatus(PaymentStatus.FAILED);
-         }
-        if (booking.getBookingStatus()== BookingStatus.CANCELLED){
-            payment.setPaymentStatus(PaymentStatus.FAILED);
+
+             if (booking.getBookingStatus()== BookingStatus.CANCELLED){
             throw new IllegalStatusException("INVALID_STATE (Booking CANCELLED)");
         }if (booking.getEvent().getEventStatus()== EventStatus.CANCELLED){
-            payment.setPaymentStatus(PaymentStatus.FAILED);
             throw new IllegalStatusException("INVALID_STATE (Event CANCELLED)");
         }
+        if (!payment.getAmount().equals(booking.getTotalPrice())){
+            payment.setPaymentStatus(PaymentStatus.FAILED);
+        }else {
             payment.setPaymentStatus(PaymentStatus.COMPLETED);
             booking.setBookingStatus(BookingStatus.CONFIRMED);
+        }
         int pointsToAdd = booking.getNumberOfTickets() * 10; // 10 points per ticket
         int currentPoints = booking.getAttendee().getRewardPoints() != null ?
                 booking.getAttendee().getRewardPoints() : 0;
@@ -69,8 +69,6 @@ public class paymentService implements IPaymentService {
         return paymentMapper.toDTO(saved);
 
     }
-
-
 
     @Override
     public PaymentDTO findById(Long id) {
@@ -84,8 +82,6 @@ public class paymentService implements IPaymentService {
         List<Payment> payments=paymentRepository.findAll();
         return paymentMapper.toDTO(payments);
     }
-
-
 
     @Override
     @Transactional
@@ -110,24 +106,16 @@ public class paymentService implements IPaymentService {
         return paymentMapper.toDTO(saved);
     }
 
-
     @Transactional
     @Override
     public void delete(Long id) {
-        Payment payment=paymentRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("Payment not found with id: "+id));
-        if (payment.getPaymentStatus()==PaymentStatus.FAILED || payment.getPaymentStatus()== PaymentStatus.REFUNDED){
-            Booking booking=payment.getBooking();
-            if (booking!=null){
-                booking.setPayment(null);
-            }
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment not found with id: " + id));
+        if (payment.getPaymentStatus() == PaymentStatus.COMPLETED) {
+            throw new IllegalStatusException("Cannot delete a COMPLETED payment! It is part of the financial history.");
         }
-        if (payment.getPaymentStatus()==PaymentStatus.COMPLETED)
-            throw new IllegalStatusException("cant delete payment !! It has an important financial history");
-        paymentRepository.deleteById(id);
+        paymentRepository.delete(payment);
     }
-
-
 
     @Override
     public Page<PaymentDTO> findByPage(int page, int size, String sortBy, String direction) {

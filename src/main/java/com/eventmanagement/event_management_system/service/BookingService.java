@@ -115,10 +115,7 @@ public class BookingService implements IBookingService {
                 booking.getPayment().setPaymentStatus(PaymentStatus.REFUNDED);
             }
         }
-        if (booking.getPayment() != null) {
-            booking.getPayment().setBooking(null);
-        }
-        booking.setBookingStatus(BookingStatus.DELETED);
+        bookingRepository.delete(booking);
     }
 
 

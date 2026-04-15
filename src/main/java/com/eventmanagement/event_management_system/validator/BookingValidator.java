@@ -30,11 +30,10 @@ public class BookingValidator {
 
 
     public void checkExistsByAttendeeIdAndEventId(BookingDTO bookingDTO) {
-        if (bookingRepository.existsByAttendeeIdAndEventIdAndBookingStatusNotAndBookingStatusNot(
+        if (bookingRepository.existsByAttendeeIdAndEventIdAndBookingStatusNot(
                 bookingDTO.getAttendeeId(),
                 bookingDTO.getEventId(),
-                BookingStatus.CANCELLED,
-                BookingStatus.DELETED
+                BookingStatus.CANCELLED
         ))
             throw new DuplicateResourceException("You already booked this event");
         }

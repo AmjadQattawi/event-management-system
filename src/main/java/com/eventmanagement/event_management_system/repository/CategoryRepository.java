@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category,Long>, JpaSpecificationExecutor<Category> {
 
-    boolean existsByEventsId(Long categoryId);
+    boolean existsByEventsNotEmpty(Long categoryId);
 
 }

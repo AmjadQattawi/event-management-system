@@ -5,6 +5,8 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
 
+    <!-- ==================== Create Entities ==================== -->
+
     <changeSet id="1" author="amjad">
 
         <!-- ==================== SEQUENCES ==================== -->
@@ -184,7 +186,57 @@
             <column name="UPDATED_AT" type="TIMESTAMP"/>
         </createTable>
 
-
     </changeSet>
+
+    <changeSet id="2-add-soft-delete-columns" author="Amjad">
+        <addColumn tableName="USERS_TBL">
+            <column name="DELETED" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addColumn tableName="EVENT">
+            <column name="DELETED" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addColumn tableName="BOOKING">
+            <column name="DELETED" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addColumn tableName="CATEGORY">
+            <column name="DELETED" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addColumn tableName="PAYMENT">
+            <column name="DELETED" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addColumn tableName="REVIEW">
+            <column name="DELETED" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="move-fk-booking-payment" author="Amjad">
+        <dropColumn tableName="PAYMENT" columnName="BOOKING_ID"/>
+        <addColumn tableName="BOOKING">
+            <column name="PAYMENT_ID" type="NUMBER(19)"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="BOOKING" baseColumnNames="PAYMENT_ID"
+                                 constraintName="FK_BOOKING_PAYMENT"
+                                 referencedTableName="PAYMENT" referencedColumnNames="ID"/>
+    </changeSet>
+
+
 
 </databaseChangeLog>

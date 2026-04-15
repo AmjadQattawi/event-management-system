@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SoftDelete;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @SequenceGenerator(name = "base_seq", sequenceName = "Payment_SEQ", allocationSize = 1)
+@SoftDelete
 public class Payment extends BaseEntity{
     @Column(nullable = false)
     private Double amount;
@@ -31,8 +33,7 @@ public class Payment extends BaseEntity{
     @Column(nullable = false)
     private PaymentStatus paymentStatus=PaymentStatus.PENDING;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "booking_id")
+    @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
     private Booking booking;
 
 }

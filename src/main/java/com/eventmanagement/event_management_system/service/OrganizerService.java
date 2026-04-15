@@ -83,8 +83,7 @@ public class OrganizerService implements IOrganizerService {
     public void delete(Long id){
         Organizer organizer=organizerRepository.findById(id)
                         .orElseThrow(()->new ResourceNotFoundException("Organizer not found with id: " + id));
-        organizer.setEvents(null);
-        organizerRepository.deleteById(id);
+        organizerRepository.delete(organizer);
     }
 
     @Override

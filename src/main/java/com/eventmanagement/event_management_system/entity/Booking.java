@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.SoftDelete;
 import org.hibernate.boot.jaxb.mapping.LifecycleCallback;
 
 import java.time.LocalDateTime;
@@ -17,6 +20,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@SoftDelete
 public class Booking extends BaseEntity{
 
     @Column(nullable = false)
@@ -30,14 +34,15 @@ public class Booking extends BaseEntity{
     @Column(updatable = false)
     private LocalDateTime bookingDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Attendee attendee;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Event event;
 
-    @OneToOne(mappedBy = "booking", fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_id")
+    @NotFound(action = NotFoundAction.IGNORE)
     private Payment payment;
-
 
 }

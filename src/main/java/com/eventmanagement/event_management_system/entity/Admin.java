@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.SequenceGenerator;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.Where;
 
 @DiscriminatorValue("Admin")
 @Setter
