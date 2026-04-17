@@ -6,6 +6,7 @@ import com.eventmanagement.event_management_system.interfaceService.IEventServic
 import com.eventmanagement.event_management_system.searchCriteria.EventSearchCriteria;
 import com.eventmanagement.event_management_system.service.BaseService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -16,10 +17,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/Event")
+@RequiredArgsConstructor
 public class EventController extends BaseController<EventDTO,Long>{
 
-    @Autowired
-    private IEventService iEventService;
+    private final IEventService iEventService;
 
     @Override
     protected BaseService<EventDTO, Long> getService() {

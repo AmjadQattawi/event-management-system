@@ -1,13 +1,12 @@
 package com.eventmanagement.event_management_system.controller;
 
-import com.eventmanagement.event_management_system.dto.BookingDTO;
 import com.eventmanagement.event_management_system.dto.CategoryDTO;
 import com.eventmanagement.event_management_system.dto.CategoryDTODetailed;
-import com.eventmanagement.event_management_system.entity.Category;
 import com.eventmanagement.event_management_system.interfaceService.ICategoryService;
 import com.eventmanagement.event_management_system.searchCriteria.CategorySearchCriteria;
 import com.eventmanagement.event_management_system.service.BaseService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -18,11 +17,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/Category")
+@RequiredArgsConstructor
 public class CategoryController extends BaseController<CategoryDTO,Long>{
 
-    @Autowired
-    private ICategoryService iCategoryService;
-
+    private final ICategoryService iCategoryService;
 
     @Override
     protected BaseService<CategoryDTO, Long> getService() {

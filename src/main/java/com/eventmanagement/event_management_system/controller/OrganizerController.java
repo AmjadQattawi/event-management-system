@@ -8,6 +8,7 @@ import com.eventmanagement.event_management_system.interfaceService.IOrganizerSe
 import com.eventmanagement.event_management_system.searchCriteria.OrganizerSearchCriteria;
 import com.eventmanagement.event_management_system.service.BaseService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -18,10 +19,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/Organizer")
+@RequiredArgsConstructor
 public class OrganizerController extends BaseController<OrganizerDTO,Long>{
 
-    @Autowired
-    private IOrganizerService iOrganizerService;
+    private final IOrganizerService iOrganizerService;
 
 
     @Override

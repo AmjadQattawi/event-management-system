@@ -1,14 +1,11 @@
 package com.eventmanagement.event_management_system.controller;
 
 import com.eventmanagement.event_management_system.dto.AdminDTO;
-import com.eventmanagement.event_management_system.dto.AttendeeDTO;
-import com.eventmanagement.event_management_system.dto.EventDTO;
 import com.eventmanagement.event_management_system.interfaceService.IAdminService;
 import com.eventmanagement.event_management_system.searchCriteria.AdminSearchCriteria;
-import com.eventmanagement.event_management_system.searchCriteria.EventSearchCriteria;
 import com.eventmanagement.event_management_system.service.BaseService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/Admin")
+@RequiredArgsConstructor
 public class AdminController extends BaseController<AdminDTO,Long> {
 
-    @Autowired
-    private IAdminService iAdminService;
+    private final IAdminService iAdminService;
 
     @Override
     protected BaseService<AdminDTO, Long> getService() {

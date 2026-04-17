@@ -1,13 +1,11 @@
 package com.eventmanagement.event_management_system.controller;
 
 import com.eventmanagement.event_management_system.dto.AttendeeDTO;
-import com.eventmanagement.event_management_system.entity.Attendee;
 import com.eventmanagement.event_management_system.interfaceService.IAttendeeService;
 import com.eventmanagement.event_management_system.searchCriteria.AttendeeSearshCriteria;
 import com.eventmanagement.event_management_system.service.BaseService;
 import jakarta.validation.Valid;
-import org.springframework.aot.AotDetector;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/Attendee")
+@RequiredArgsConstructor
 public class AttendeController extends BaseController<AttendeeDTO,Long> {
 
-    @Autowired
-    private IAttendeeService iAttendeeService;
+
+    private final IAttendeeService iAttendeeService;
 
 
     @Override

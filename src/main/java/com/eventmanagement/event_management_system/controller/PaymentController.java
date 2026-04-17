@@ -7,6 +7,7 @@ import com.eventmanagement.event_management_system.interfaceService.IPaymentServ
 import com.eventmanagement.event_management_system.searchCriteria.PaymentSearchCriteria;
 import com.eventmanagement.event_management_system.service.BaseService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -16,11 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
 @RequestMapping("/Payment")
+@RequiredArgsConstructor
 public class PaymentController extends BaseController<PaymentDTO,Long> {
 
-    @Autowired
     private IPaymentService iPaymentService;
-
 
     @Override
     protected BaseService<PaymentDTO, Long> getService() {

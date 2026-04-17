@@ -1,8 +1,6 @@
 package com.eventmanagement.event_management_system.controller;
 
-import com.eventmanagement.event_management_system.dto.EventDTO;
 import com.eventmanagement.event_management_system.service.BaseService;
-import com.eventmanagement.event_management_system.searchCriteria.EventSearchCriteria;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
