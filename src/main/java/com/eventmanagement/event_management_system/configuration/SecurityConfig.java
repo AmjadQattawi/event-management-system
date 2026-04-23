@@ -5,6 +5,7 @@ import com.eventmanagement.event_management_system.enums.Role;
 import com.eventmanagement.event_management_system.repository.AdminRepository;
 import com.eventmanagement.event_management_system.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    @Value("${app.admin.email}")
+    private String adminEmail;
+
+    @Value("${app.admin.password}")
+    private String adminPassword;
+
     private final JwtAuthenticationFilter jwtFilter;
 
     @Bean
@@ -37,11 +44,10 @@ public class SecurityConfig {
     @Bean
     CommandLineRunner initAdmin(AdminRepository repo, PasswordEncoder encoder) {
         return args -> {
-            if (repo.findByEmail("admin@test.com").isEmpty()) {
+            if (repo.findByEmail(adminEmail).isEmpty()) {
                 Admin admin = new Admin();
-//                admin.setName("AdminOne");
-                admin.setEmail("admin@test.com");
-                admin.setPassword(encoder.encode("123456"));
+                admin.setEmail(adminEmail);
+                admin.setPassword(encoder.encode(adminPassword));
                 admin.setRole(Role.ADMIN);
                 repo.save(admin);
             }
@@ -64,7 +70,9 @@ public class SecurityConfig {
                         .requestMatchers("/Auth/**").permitAll()
                         .anyRequest().authenticated()
                 ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 }
+
+
+
