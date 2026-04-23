@@ -1,5 +1,6 @@
 package com.eventmanagement.event_management_system.entity;
 
+import com.eventmanagement.event_management_system.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.Getter;
@@ -22,5 +23,6 @@ public class Attendee extends User{
 
     @OneToMany(mappedBy = "attendee",cascade =  CascadeType.REMOVE)
     private List<Review>reviews=new ArrayList<>();
+
 
 }

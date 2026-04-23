@@ -2,7 +2,9 @@ package com.eventmanagement.event_management_system.service;
 
 import com.eventmanagement.event_management_system.dto.AdminDTO;
 import com.eventmanagement.event_management_system.entity.Admin;
+import com.eventmanagement.event_management_system.enums.Role;
 import com.eventmanagement.event_management_system.enums.UserStatus;
+import com.eventmanagement.event_management_system.exception.DuplicateResourceException;
 import com.eventmanagement.event_management_system.exception.ResourceNotFoundException;
 import com.eventmanagement.event_management_system.interfaceService.IAdminService;
 import com.eventmanagement.event_management_system.mapper.AdminMapper;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,17 +29,21 @@ public class AdminService implements IAdminService {
 
 
     private final AdminRepository adminRepository;
-
+    private final PasswordEncoder passwordEncoder;
     private final AdminMapper adminMapper;
 
     @Override
     @Transactional
     public AdminDTO create(AdminDTO adminDTO) {
+        if (adminRepository.findByEmail(adminDTO.getEmail()).isPresent()) {
+            throw new DuplicateResourceException("Sorry, this email is already registered in the system!");
+        }
         Admin admin = adminMapper.toEntity(adminDTO);
+        admin.setRole(Role.ADMIN);
+        admin.setPassword(passwordEncoder.encode(adminDTO.getPassword()));
         if (admin.getUserStatus() == null) {
             admin.setUserStatus(UserStatus.ACTIVE);
         }
-//        admin.setRole(Role.ADMIN);
         adminRepository.save(admin);
         return adminMapper.toDTO(admin);
     }
@@ -58,8 +65,26 @@ public class AdminService implements IAdminService {
     @Transactional
     public AdminDTO update(Long id, AdminDTO adminDTO) {
         Admin admin = adminRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("admin not found with id:" + id));
-        adminMapper.updateAttendeeFromDto(adminDTO, admin);
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Admin not found with id: " + id));
+        adminMapper.updateAdminFromDto(adminDTO, admin);
+        if (adminDTO.getPassword() != null && !adminDTO.getPassword().isBlank()) {
+            admin.setPassword(passwordEncoder.encode(adminDTO.getPassword()));
+        }
+        Admin saved = adminRepository.save(admin);
+        return adminMapper.toDTO(saved);
+    }
+
+    @Override
+    @Transactional
+    public AdminDTO updateByEmail(String email, AdminDTO adminDTO) {
+        Admin admin = adminRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Admin not found with email: " + email));
+        adminMapper.updateAdminFromDto(adminDTO, admin);
+        if (adminDTO.getPassword() != null && !adminDTO.getPassword().isBlank()) {
+            admin.setPassword(passwordEncoder.encode(adminDTO.getPassword()));
+        }
         Admin saved = adminRepository.save(admin);
         return adminMapper.toDTO(saved);
     }

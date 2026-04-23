@@ -1,7 +1,6 @@
 package com.eventmanagement.event_management_system.service;
 
 import com.eventmanagement.event_management_system.dto.EventDTO;
-import com.eventmanagement.event_management_system.dto.EventWithOrganizersDTO;
 import com.eventmanagement.event_management_system.entity.*;
 import com.eventmanagement.event_management_system.enums.BookingStatus;
 import com.eventmanagement.event_management_system.enums.EventStatus;
@@ -14,7 +13,6 @@ import com.eventmanagement.event_management_system.externalAPIDTO.GeoResult;
 import com.eventmanagement.event_management_system.externalAPIDTO.weatherDTO;
 import com.eventmanagement.event_management_system.interfaceService.IEventService;
 import com.eventmanagement.event_management_system.mapper.EventMapper;
-import com.eventmanagement.event_management_system.mapper.EventWithOrganizersMapper;
 import com.eventmanagement.event_management_system.repository.CategoryRepository;
 import com.eventmanagement.event_management_system.repository.EventRepository;
 import com.eventmanagement.event_management_system.repository.OrganizerRepository;
@@ -23,7 +21,6 @@ import com.eventmanagement.event_management_system.specification.EventSpecificat
 import com.eventmanagement.event_management_system.validator.EventValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,8 +28,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -44,7 +39,6 @@ public class EventService implements IEventService {
     private final CategoryRepository categoryRepository;
     private final OrganizerRepository organizerRepository;
     private final EventValidator eventValidator;
-    private final EventWithOrganizersMapper eventWithOrganizersMapper;
     private final RestTemplate restTemplate;
 
     @Override
@@ -114,7 +108,7 @@ public class EventService implements IEventService {
         event.setDescription(eventDTO.getDescription());
         event.setStartDate(eventDTO.getStartDate());
         event.setEndDate(eventDTO.getEndDate());
-        event.setLocation(eventDTO.getLocation());
+        event.setCity(eventDTO.getCity());
         event.setPrice(eventDTO.getPrice());
         event.setCapacity(eventDTO.getCapacity());
         event.setEventStatus(eventDTO.getEventStatus());
@@ -176,15 +170,11 @@ public class EventService implements IEventService {
 
     }
 
-    @Override
-    public List<EventWithOrganizersDTO> findEventWithOrganizers() {
-        List<Event> events = eventRepository.findAll();
-        return eventWithOrganizersMapper.toDTO(events);
-    }
+
 
     // weather API
     public weatherDTO weatherInfo(EventDTO eventDTO) {
-        String url = "https://geocoding-api.open-meteo.com/v1/search?name=" + eventDTO.getLocation() + "&count=1";
+        String url = "https://geocoding-api.open-meteo.com/v1/search?name=" + eventDTO.getCity() + "&count=1";
         GeoDTO result = restTemplate.getForObject(url, GeoDTO.class);
 
         GeoResult city = result.getResults().get(0);

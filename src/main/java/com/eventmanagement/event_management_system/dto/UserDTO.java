@@ -12,8 +12,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UserDTO extends BaseDTO{
-    @NotBlank(message = "name is required")
-    private String name;
+
     @NotBlank(message = "Email is required")
     @Email(message = "Please provide a valid email address")
     private String email;
@@ -23,7 +22,6 @@ public class UserDTO extends BaseDTO{
     @NotBlank(message = "Password is required")
     private String password;
 
-    private String phone;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UserStatus userStatus;
 

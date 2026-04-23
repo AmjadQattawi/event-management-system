@@ -1,7 +1,6 @@
 package com.eventmanagement.event_management_system.interfaceService;
 
-import com.eventmanagement.event_management_system.dto.CategoryDTO;
-import com.eventmanagement.event_management_system.dto.EventDTO;
+
 import com.eventmanagement.event_management_system.dto.OrganizerDTO;
 import com.eventmanagement.event_management_system.searchCriteria.OrganizerSearchCriteria;
 import com.eventmanagement.event_management_system.service.BaseService;
@@ -16,6 +15,8 @@ public interface IOrganizerService extends BaseService<OrganizerDTO,Long> {
     public OrganizerDTO update(Long id, OrganizerDTO organizerDTO) ;
 
     public Page<OrganizerDTO> search(OrganizerSearchCriteria organizerSearchCriteria,int page,int size);
+
+    public OrganizerDTO updateByEmail(String email,OrganizerDTO organizerDTO);
 
 
 }

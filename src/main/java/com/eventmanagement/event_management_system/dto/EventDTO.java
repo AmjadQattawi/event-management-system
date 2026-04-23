@@ -20,7 +20,7 @@ public class EventDTO extends BaseDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String description;
     @NotBlank
-    private String location;
+    private String city;
     @Future(message = "Start date must be in the future")
     private LocalDateTime startDate;
     @Future(message = "End date must be in the future")

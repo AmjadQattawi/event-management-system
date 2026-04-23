@@ -14,4 +14,6 @@ public interface IAttendeeService extends BaseService<AttendeeDTO,Long> {
 
     public Page<AttendeeDTO> search(AttendeeSearshCriteria attendeeSearshCriteria,int page,int size);
 
-}
+    public AttendeeDTO updateByEmail(String email, AttendeeDTO dto) ;
+
+    }

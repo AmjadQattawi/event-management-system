@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -25,15 +26,21 @@ public class BookingController  extends BaseController<BookingDTO,Long> {
         return iBookingService;
     }
 
+    @PreAuthorize("hasRole('ATTENDEE')")
     @PostMapping("/create")
     public ResponseEntity<BookingDTO> create(@Valid @RequestBody BookingDTO bookingDTO) {
         return new ResponseEntity<>(iBookingService.create(bookingDTO), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyRole('ATTENDEE','ORGANIZER')")
     @PutMapping("/update")
-    public ResponseEntity<BookingDTO> update(Long id, @Valid @RequestBody BookingDTO bookingDTO) {
+    public ResponseEntity<BookingDTO> update(
+            @RequestParam Long id,
+            @Valid @RequestBody BookingDTO bookingDTO) {
         return ResponseEntity.ok(iBookingService.update(id,bookingDTO));
     }
+
+    @PreAuthorize("hasAnyRole('ATTENDEE','ORGANIZER')")
     @GetMapping("/search")
     public Page<BookingDTO> search(
             BookingSearchCriteria bookingSearchCriteria,

@@ -21,16 +21,14 @@ import org.hibernate.annotations.SoftDelete;
 @SequenceGenerator(name = "base_seq", sequenceName = "User_SEQ", allocationSize = 1)
 public abstract class User extends BaseEntity {
 
-    @Column(nullable = false)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String password;
-
-    private String phone;
 
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus=UserStatus.ACTIVE;

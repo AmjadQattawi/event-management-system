@@ -17,5 +17,6 @@ public interface IAdminService extends BaseService<AdminDTO, Long> {
 
     public Page<AdminDTO> search(AdminSearchCriteria adminSearchCriteria, int page, int size);
 
+    public AdminDTO updateByEmail(String email, AdminDTO adminDTO);
 
     }

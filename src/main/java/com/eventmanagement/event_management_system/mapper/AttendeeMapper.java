@@ -11,6 +11,9 @@ public interface AttendeeMapper extends BaseMapper<Attendee, AttendeeDTO>{
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "email", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "role", ignore = true)
     void updateAttendeeFromDto(AttendeeDTO attendeeDTO, @MappingTarget Attendee attendee);
 
 }

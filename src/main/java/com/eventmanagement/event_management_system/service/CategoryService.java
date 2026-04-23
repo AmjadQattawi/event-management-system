@@ -1,20 +1,16 @@
 package com.eventmanagement.event_management_system.service;
 
 import com.eventmanagement.event_management_system.dto.CategoryDTO;
-import com.eventmanagement.event_management_system.dto.CategoryDTODetailed;
 import com.eventmanagement.event_management_system.entity.Category;
 import com.eventmanagement.event_management_system.exception.IllegalStatusException;
 import com.eventmanagement.event_management_system.exception.ResourceNotFoundException;
 import com.eventmanagement.event_management_system.interfaceService.ICategoryService;
-import com.eventmanagement.event_management_system.mapper.CategoryDetailedMapper;
 import com.eventmanagement.event_management_system.mapper.CategoryMapper;
 import com.eventmanagement.event_management_system.repository.CategoryRepository;
 import com.eventmanagement.event_management_system.searchCriteria.CategorySearchCriteria;
 import com.eventmanagement.event_management_system.specification.CategorySpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +28,6 @@ public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
-    private final CategoryDetailedMapper categoryDetailedMapper;
 
     @Transactional
     @Override
@@ -73,6 +68,7 @@ public class CategoryService implements ICategoryService {
     public void delete(Long id){
         Category category=categoryRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Category not found with id: "+ id));
+
         if (categoryRepository.existsByEventsId (id))
           throw new IllegalStatusException("This section cannot be deleted! There are currently events associated with it.");
         categoryRepository.delete(category);
@@ -98,11 +94,7 @@ public class CategoryService implements ICategoryService {
         return page1.map(categoryMapper::toDTO);
     }
 
-    @Override
-    public List<CategoryDTODetailed> getCategoryDTODetailed(){
-        List<Category> categories=categoryRepository.findAll();
-        return categoryDetailedMapper.toDTO(categories);
-    }
+
 
 
 }

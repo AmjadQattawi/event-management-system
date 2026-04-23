@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,16 +27,21 @@ public class ReviewController extends BaseController<ReviewDTO,Long> {
         return iReviewService;
     }
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ATTENDEE')")
     public ResponseEntity<ReviewDTO> create(@Valid @RequestBody ReviewDTO reviewDTO) {
         return new ResponseEntity<>(iReviewService.create(reviewDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ReviewDTO> update(Long id, @Valid @RequestBody ReviewDTO reviewDTO) {
+    @PreAuthorize("hasAnyRole('ATTENDEE','ADMIN')")
+    public ResponseEntity<ReviewDTO> update(
+            @RequestParam Long id,
+            @Valid @RequestBody ReviewDTO reviewDTO) {
         return ResponseEntity.ok(iReviewService.update(id,reviewDTO));
     }
 
     @GetMapping("/search")
+    @PreAuthorize("isAuthenticated()")
     public Page<ReviewDTO> search(
             ReviewSearchCriteria reviewSearchCriteria,
             @RequestParam(defaultValue = "0") int page,

@@ -12,7 +12,7 @@ public class EventSearchCriteria {
     private String description;
     private LocalDateTime startDateFrom;
     private LocalDateTime startDateTo;
-    private String location;
+    private String city;
     private Double minPrice;
     private Double maxPrice;
     private Integer minCapacity;

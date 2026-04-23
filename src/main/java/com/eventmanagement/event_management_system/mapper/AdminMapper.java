@@ -13,7 +13,9 @@ public interface AdminMapper extends BaseMapper<Admin, AdminDTO> {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    void updateAttendeeFromDto(AdminDTO adminDTO, @MappingTarget Admin admin);
-
+    @Mapping(target = "email", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "role", ignore = true)
+    void updateAdminFromDto(AdminDTO adminDTO, @MappingTarget Admin admin);
 
 }

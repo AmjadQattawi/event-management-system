@@ -24,9 +24,9 @@ public class EventSpecification {
             if (StringUtils.hasText(criteria.getDescription())){
                 predicates.add(cb.like(cb.lower(root.get("description")),"%"+criteria.getDescription()+"%"));
             }
-            if (StringUtils.hasText(criteria.getLocation())) {
+            if (StringUtils.hasText(criteria.getCity())) {
                 predicates.add(cb.like(cb.lower(root.get("location")),
-                        "%" + criteria.getLocation().toLowerCase() + "%"));
+                        "%" + criteria.getCity().toLowerCase() + "%"));
             }
             if (criteria.getStartDateFrom()!=null){
                 predicates.add(cb.greaterThanOrEqualTo(root.get("startDate"),criteria.getStartDateFrom()));

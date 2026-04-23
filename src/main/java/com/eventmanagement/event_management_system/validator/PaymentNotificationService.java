@@ -42,7 +42,6 @@ public class PaymentNotificationService {
         Booking booking = bookingRepository.findById(paymentDTO.getBookingId())
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
         String toEmail=booking.getAttendee().getEmail();
-        String toName=booking.getAttendee().getName();
 
         HttpHeaders httpHeaders= new HttpHeaders();
         httpHeaders.set("api-key",apiKey.trim());

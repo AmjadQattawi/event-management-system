@@ -32,7 +32,7 @@ public class Event extends BaseEntity{
     @Column(nullable = false)
     private LocalDateTime endDate;
     @Column(nullable = false)
-    private String location;
+    private String city;
 
     @Column(nullable = false)
     private Double price;

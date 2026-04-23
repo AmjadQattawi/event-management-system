@@ -2,7 +2,9 @@ package com.eventmanagement.event_management_system.service;
 
 import com.eventmanagement.event_management_system.dto.AttendeeDTO;
 import com.eventmanagement.event_management_system.entity.Attendee;
+import com.eventmanagement.event_management_system.enums.Role;
 import com.eventmanagement.event_management_system.enums.UserStatus;
+import com.eventmanagement.event_management_system.exception.DuplicateResourceException;
 import com.eventmanagement.event_management_system.exception.ResourceNotFoundException;
 import com.eventmanagement.event_management_system.interfaceService.IAttendeeService;
 import com.eventmanagement.event_management_system.mapper.AttendeeMapper;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,23 +29,26 @@ public class AttendeeService implements IAttendeeService {
 
 
     private final AttendeeRepository attendeeRepository;
-
+    private final PasswordEncoder passwordEncoder;
     private final AttendeeMapper attendeeMapper;
 
     @Override
     @Transactional
     public AttendeeDTO create(AttendeeDTO attendeeDTO) {
+        if (attendeeRepository.findByEmail(attendeeDTO.getEmail()).isPresent()) {
+            throw new DuplicateResourceException("Sorry, this email is already registered in the system!");
+        }
         Attendee attendee=attendeeMapper.toEntity(attendeeDTO);
+        attendee.setRole(Role.ATTENDEE);
+        attendee.setPassword(passwordEncoder.encode(attendeeDTO.getPassword()));
         if (attendee.getUserStatus() == null) {
             attendee.setUserStatus(UserStatus.ACTIVE);
         }
-        if (attendee.getRewardPoints() == null) {
-            attendee.setRewardPoints(0);
-        }
-//        attendee.setRole(Role.ATTENDEE);
+        attendee.setRewardPoints(10);
         Attendee saved=attendeeRepository.save(attendee);
         return attendeeMapper.toDTO(saved);
     }
+
 
     @Override
     public AttendeeDTO findById(Long id) {
@@ -63,9 +69,26 @@ public class AttendeeService implements IAttendeeService {
         Attendee attendee=attendeeRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Attendee not found with id:"+id));
         attendeeMapper.updateAttendeeFromDto(attendeeDTO,attendee);
+        if (attendeeDTO.getPassword() != null && !attendeeDTO.getPassword().isBlank()) {
+            attendee.setPassword(passwordEncoder.encode(attendeeDTO.getPassword()));
+        }
         Attendee saved=attendeeRepository.save(attendee);
         return attendeeMapper.toDTO(saved);
     }
+
+
+    @Override
+    @Transactional
+    public AttendeeDTO updateByEmail(String email, AttendeeDTO attendeeDTO) {
+        Attendee attendee = attendeeRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Attendee not found"));
+        attendeeMapper.updateAttendeeFromDto(attendeeDTO,attendee);
+        if (attendeeDTO.getPassword() != null && !attendeeDTO.getPassword().isBlank()) {
+            attendee.setPassword(passwordEncoder.encode(attendeeDTO.getPassword()));
+        }
+        return attendeeMapper.toDTO(attendeeRepository.save(attendee));
+    }
+
 
     @Override
     @Transactional

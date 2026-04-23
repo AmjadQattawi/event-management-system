@@ -5,90 +5,98 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
 
-    <!-- ==================== Create Entities ==================== -->
-
-    <changeSet id="1" author="amjad">
+    <changeSet id="1-init-full-schema" author="amjad">
 
         <!-- ==================== SEQUENCES ==================== -->
-        <createSequence sequenceName="USER_SEQ" startValue="1" incrementBy="1"/>
+        <createSequence sequenceName="USER_SEQ"     startValue="1" incrementBy="1"/>
         <createSequence sequenceName="CATEGORY_SEQ" startValue="1" incrementBy="1"/>
-        <createSequence sequenceName="EVENT_SEQ" startValue="1" incrementBy="1"/>
-        <createSequence sequenceName="BOOKING_SEQ" startValue="1" incrementBy="1"/>
-        <createSequence sequenceName="PAYMENT_SEQ" startValue="1" incrementBy="1"/>
-        <createSequence sequenceName="REVIEW_SEQ" startValue="1" incrementBy="1"/>
+        <createSequence sequenceName="EVENT_SEQ"    startValue="1" incrementBy="1"/>
+        <createSequence sequenceName="BOOKING_SEQ"  startValue="1" incrementBy="1"/>
+        <createSequence sequenceName="PAYMENT_SEQ"  startValue="1" incrementBy="1"/>
+        <createSequence sequenceName="REVIEW_SEQ"   startValue="1" incrementBy="1"/>
 
         <!-- ==================== CATEGORY ==================== -->
         <createTable tableName="CATEGORY">
-            <column name="ID" type="NUMBER(19)">
+            <column name="ID"          type="NUMBER(19)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="NAME" type="VARCHAR2(255)">
+            <column name="NAME"        type="VARCHAR2(255)">
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="DESCRIPTION" type="VARCHAR2(1000)"/>
-            <column name="CREATED_AT" type="TIMESTAMP"/>
-            <column name="UPDATED_AT" type="TIMESTAMP"/>
+            <column name="DELETED"     type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_AT"  type="TIMESTAMP"/>
+            <column name="UPDATED_AT"  type="TIMESTAMP"/>
         </createTable>
 
         <!-- ==================== USERS ==================== -->
         <createTable tableName="USERS_TBL">
-            <column name="ID" type="NUMBER(19)">
+            <column name="ID"          type="NUMBER(19)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="USER_TYPE" type="VARCHAR2(31)">
+            <column name="USER_TYPE"   type="VARCHAR2(31)">
                 <constraints nullable="false"/>
             </column>
-            <column name="NAME" type="VARCHAR2(255)">
+            <column name="NAME"        type="VARCHAR2(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="EMAIL" type="VARCHAR2(255)">
+            <column name="EMAIL"       type="VARCHAR2(255)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="PASSWORD" type="VARCHAR2(255)">
+            <column name="PASSWORD"    type="VARCHAR2(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="PHONE" type="VARCHAR2(50)"/>
+            <column name="PHONE"       type="VARCHAR2(50)"/>
+            <column name="ROLE"        type="VARCHAR2(50)"/>
             <column name="USER_STATUS" type="VARCHAR2(50)" defaultValue="ACTIVE"/>
-            <column name="REWARD_POINTS" type="NUMBER" defaultValueNumeric="0"/>
-            <column name="COMPANY_NAME" type="VARCHAR2(255)"/>
-            <column name="CREATED_AT" type="TIMESTAMP"/>
-            <column name="UPDATED_AT" type="TIMESTAMP"/>
+            <column name="REWARD_POINTS" type="NUMBER"    defaultValueNumeric="0"/>
+            <column name="COMPANY_NAME"  type="VARCHAR2(255)"/>
+            <column name="DELETED"     type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_AT"  type="TIMESTAMP"/>
+            <column name="UPDATED_AT"  type="TIMESTAMP"/>
         </createTable>
 
         <!-- ==================== EVENT ==================== -->
         <createTable tableName="EVENT">
-            <column name="ID" type="NUMBER(19)">
+            <column name="ID"           type="NUMBER(19)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="NAME" type="VARCHAR2(255)">
+            <column name="NAME"         type="VARCHAR2(255)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="DESCRIPTION" type="VARCHAR2(2000)"/>
-            <column name="START_DATE" type="TIMESTAMP">
+            <column name="DESCRIPTION"  type="VARCHAR2(2000)"/>
+            <column name="START_DATE"   type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="END_DATE" type="TIMESTAMP">
+            <column name="END_DATE"     type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="LOCATION" type="VARCHAR2(255)">
+            <column name="LOCATION"     type="VARCHAR2(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="PRICE" type="NUMBER(19,2)">
+            <column name="PRICE"        type="NUMBER(19,2)">
                 <constraints nullable="false"/>
             </column>
-            <column name="CAPACITY" type="NUMBER">
+            <column name="CAPACITY"     type="NUMBER">
                 <constraints nullable="false"/>
             </column>
             <column name="EVENT_STATUS" type="VARCHAR2(50)" defaultValue="DRAFT"/>
-            <column name="CATEGORY_ID" type="NUMBER(19)">
+            <column name="CATEGORY_ID"  type="NUMBER(19)">
                 <constraints foreignKeyName="FK_EVENT_CATEGORY"
                              referencedTableName="CATEGORY"
                              referencedColumnNames="ID"/>
             </column>
-            <column name="TEMPERATURE" type="NUMBER(10,2)"/>
-            <column name="WINDSPEED" type="NUMBER(10,2)"/>
-            <column name="CREATED_AT" type="TIMESTAMP"/>
-            <column name="UPDATED_AT" type="TIMESTAMP"/>
+            <column name="TEMPERATURE"  type="NUMBER(10,2)"/>
+            <column name="WINDSPEED"    type="NUMBER(10,2)"/>
+            <column name="DELETED"      type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_AT"   type="TIMESTAMP"/>
+            <column name="UPDATED_AT"   type="TIMESTAMP"/>
         </createTable>
 
         <!-- ==================== ORGANIZER_EVENTS ==================== -->
@@ -111,132 +119,104 @@
                        columnNames="EVENT_ID, ORGANIZER_ID"
                        constraintName="PK_ORGANIZER_EVENTS"/>
 
-        <!-- ==================== BOOKING ==================== -->
-        <createTable tableName="BOOKING">
-            <column name="ID" type="NUMBER(19)">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="NUMBER_OF_TICKETS" type="NUMBER">
-                <constraints nullable="false"/>
-            </column>
-            <column name="VERSION" type="NUMBER(19)"/>
-            <column name="TOTAL_PRICE" type="NUMBER(19,2)"/>
-            <column name="BOOKING_STATUS" type="VARCHAR2(50)" defaultValue="PENDING"/>
-            <column name="BOOKING_DATE" type="TIMESTAMP"/>
-            <column name="ATTENDEE_ID" type="NUMBER(19)">
-                <constraints foreignKeyName="FK_BOOKING_ATTENDEE"
-                             referencedTableName="USERS_TBL"
-                             referencedColumnNames="ID"/>
-            </column>
-            <column name="EVENT_ID" type="NUMBER(19)">
-                <constraints foreignKeyName="FK_BOOKING_EVENT"
-                             referencedTableName="EVENT"
-                             referencedColumnNames="ID"/>
-            </column>
-            <column name="CREATED_AT" type="TIMESTAMP"/>
-            <column name="UPDATED_AT" type="TIMESTAMP"/>
-        </createTable>
-
         <!-- ==================== PAYMENT ==================== -->
+        <!-- Payment قبل Booking لأن Booking بيعمل FK على Payment -->
         <createTable tableName="PAYMENT">
-            <column name="ID" type="NUMBER(19)">
+            <column name="ID"             type="NUMBER(19)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="AMOUNT" type="NUMBER(19,2)">
+            <column name="AMOUNT"         type="NUMBER(19,2)">
                 <constraints nullable="false"/>
             </column>
-            <column name="PAYMENT_DATE" type="TIMESTAMP"/>
+            <column name="PAYMENT_DATE"   type="TIMESTAMP"/>
             <column name="PAYMENT_METHOD" type="VARCHAR2(50)">
                 <constraints nullable="false"/>
             </column>
             <column name="PAYMENT_STATUS" type="VARCHAR2(50)" defaultValue="PENDING">
                 <constraints nullable="false"/>
             </column>
-            <column name="BOOKING_ID" type="NUMBER(19)">
-                <constraints unique="true"
-                             foreignKeyName="FK_PAYMENT_BOOKING"
-                             referencedTableName="BOOKING"
+            <column name="DELETED"        type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_AT"     type="TIMESTAMP"/>
+            <column name="UPDATED_AT"     type="TIMESTAMP"/>
+        </createTable>
+
+        <!-- ==================== BOOKING ==================== -->
+        <createTable tableName="BOOKING">
+            <column name="ID"               type="NUMBER(19)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NUMBER_OF_TICKETS" type="NUMBER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION"           type="NUMBER(19)"/>
+            <column name="TOTAL_PRICE"       type="NUMBER(19,2)"/>
+            <column name="BOOKING_STATUS"    type="VARCHAR2(50)" defaultValue="PENDING"/>
+            <column name="BOOKING_DATE"      type="TIMESTAMP"/>
+            <column name="ATTENDEE_ID"       type="NUMBER(19)">
+                <constraints foreignKeyName="FK_BOOKING_ATTENDEE"
+                             referencedTableName="USERS_TBL"
                              referencedColumnNames="ID"/>
             </column>
-            <column name="CREATED_AT" type="TIMESTAMP"/>
-            <column name="UPDATED_AT" type="TIMESTAMP"/>
+            <column name="EVENT_ID"          type="NUMBER(19)">
+                <constraints foreignKeyName="FK_BOOKING_EVENT"
+                             referencedTableName="EVENT"
+                             referencedColumnNames="ID"/>
+            </column>
+            <column name="PAYMENT_ID"        type="NUMBER(19)">
+                <constraints foreignKeyName="FK_BOOKING_PAYMENT"
+                             referencedTableName="PAYMENT"
+                             referencedColumnNames="ID"/>
+            </column>
+            <column name="DELETED"           type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_AT"        type="TIMESTAMP"/>
+            <column name="UPDATED_AT"        type="TIMESTAMP"/>
         </createTable>
 
         <!-- ==================== REVIEW ==================== -->
         <createTable tableName="REVIEW">
-            <column name="ID" type="NUMBER(19)">
+            <column name="ID"             type="NUMBER(19)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="RATING" type="NUMBER"/>
+            <column name="RATING"         type="NUMBER"/>
             <column name="REVIEW_COMMENT" type="VARCHAR2(2000)"/>
-            <column name="REVIEW_DATE" type="TIMESTAMP"/>
-            <column name="ATTENDEE_ID" type="NUMBER(19)">
+            <column name="REVIEW_DATE"    type="TIMESTAMP"/>
+            <column name="ATTENDEE_ID"    type="NUMBER(19)">
                 <constraints nullable="false"
                              foreignKeyName="FK_REVIEW_ATTENDEE"
                              referencedTableName="USERS_TBL"
                              referencedColumnNames="ID"/>
             </column>
-            <column name="EVENT_ID" type="NUMBER(19)">
+            <column name="EVENT_ID"       type="NUMBER(19)">
                 <constraints nullable="false"
                              foreignKeyName="FK_REVIEW_EVENT"
                              referencedTableName="EVENT"
                              referencedColumnNames="ID"/>
             </column>
-            <column name="CREATED_AT" type="TIMESTAMP"/>
-            <column name="UPDATED_AT" type="TIMESTAMP"/>
+            <column name="DELETED"        type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_AT"     type="TIMESTAMP"/>
+            <column name="UPDATED_AT"     type="TIMESTAMP"/>
         </createTable>
 
     </changeSet>
 
-    <changeSet id="2-add-soft-delete-columns" author="Amjad">
-        <addColumn tableName="USERS_TBL">
-            <column name="DELETED" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
+    <changeSet id="2-modify-users-and-event" author="amjad">
 
-        <addColumn tableName="EVENT">
-            <column name="DELETED" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
+        <!-- ==================== USERS_TBL ==================== -->
+        <dropColumn tableName="USERS_TBL" columnName="NAME"/>
+        <dropColumn tableName="USERS_TBL" columnName="PHONE"/>
 
-        <addColumn tableName="BOOKING">
-            <column name="DELETED" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
+        <!-- ==================== EVENT ==================== -->
+        <renameColumn tableName="EVENT"
+                      oldColumnName="LOCATION"
+                      newColumnName="CITY"
+                      columnDataType="VARCHAR2(255)"/>
 
-        <addColumn tableName="CATEGORY">
-            <column name="DELETED" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
-
-        <addColumn tableName="PAYMENT">
-            <column name="DELETED" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
-
-        <addColumn tableName="REVIEW">
-            <column name="DELETED" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
     </changeSet>
-
-
-    <changeSet id="move-fk-booking-payment" author="Amjad">
-        <dropColumn tableName="PAYMENT" columnName="BOOKING_ID"/>
-        <addColumn tableName="BOOKING">
-            <column name="PAYMENT_ID" type="NUMBER(19)"/>
-        </addColumn>
-        <addForeignKeyConstraint baseTableName="BOOKING" baseColumnNames="PAYMENT_ID"
-                                 constraintName="FK_BOOKING_PAYMENT"
-                                 referencedTableName="PAYMENT" referencedColumnNames="ID"/>
-    </changeSet>
-
-
 
 </databaseChangeLog>
