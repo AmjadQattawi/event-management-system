@@ -32,27 +32,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader("Authorization");
 
-        // ❗ إذا ما في token → كمل عادي
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 🔥 استخراج التوكن
         String token = authHeader.substring(7);
 
-        // 🔥 استخراج username
         String username = jwtService.extractUsername(token);
 
-        // ❗ إذا في user ولسا مش authenticated
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            // 🔥 تحقق من التوكن
             if (jwtService.isTokenValid(token, userDetails)) {
 
-                // ✅ أضف هاد عشان يكتمل الـ Authentication object
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities()
@@ -61,8 +55,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
-
-        // كمل الفلو
         filterChain.doFilter(request, response);
     }
 }
