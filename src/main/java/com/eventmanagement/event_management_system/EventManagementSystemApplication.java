@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.ws.transport.http.MessageDispatcherServlet;
 
-
 @SpringBootApplication
 public class EventManagementSystemApplication {
     @Bean
