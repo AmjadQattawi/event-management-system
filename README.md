@@ -21,7 +21,7 @@
 
 The **Event Management System** is a fully-featured backend API that handles the complete lifecycle of events — from creation and publishing to booking, payment processing, and post-event reviews. The system integrates real-time weather data for event locations, sends automated email notifications after successful payments, and uses scheduled jobs to manage booking expirations automatically.
 
-Built as a graduation-to-industry project during a professional Java/Spring Boot internship, it demonstrates real-world backend engineering practices including clean layered architecture, database migrations, async processing, and external API integration.
+Built as a graduation-to-industry project during a professional Java/Spring Boot internship, it demonstrates real-world backend engineering practices including clean layered architecture, JWT-secured endpoints, unit testing, structured logging, database migrations, async processing, and external API integration.  
 
 ---
 
@@ -41,7 +41,9 @@ Built as a graduation-to-industry project during a professional Java/Spring Boot
 | 📖 **API Documentation** | Interactive Swagger UI available at `/swagger-ui/index.html` |
 | 🔄 **DB Migrations** | Full schema versioning with Liquibase — no manual SQL setup needed |
 | 📊 **Health Monitoring** | Spring Boot Actuator endpoints for health, beans, and app info |
-
+🔐 Security              | JWT-based authentication with Spring Security — all endpoints protected 
+🧪 Unit Testing          | Core business logic covered with JUnit 5 & Mockito                      
+📋 Logging               | Structured runtime logging via SLF4J for traceability and debugging   
 ---
 
 ## 🏗️ Architecture & Design
@@ -61,7 +63,8 @@ The project follows a clean **layered architecture** pattern:
 ├── validator        → Business rule validators
 ├── exception        → Custom exceptions & global handler
 ├── enums            → Domain enumerations
-├── configuration    → App config (async, scheduling, beans)
+├── configuration    → App config (async, scheduling, security, beans)
+├── security         → JWT filter, token provider, security config 
 └── externalAPIDTO   → DTOs for external API responses
 ```
 
@@ -71,8 +74,8 @@ The project follows a clean **layered architecture** pattern:
 - **Strategy Pattern** via JPA Specifications for dynamic queries
 - **Template Method** via `BaseController` and `BaseService` for shared CRUD
 - **Async Processing** for email sending (non-blocking thread pool)
-- **Scheduled Tasks** for booking expiry and event status updates
-
+-  **Scheduled Tasks**for booking expiry and event status updates
+- **Security Filter Chain** via Spring Security for stateless JWT validation 
 ---
 
 ## 🛠️ Tech Stack
@@ -81,6 +84,7 @@ The project follows a clean **layered architecture** pattern:
 |---|---|
 | Language | Java 21 |
 | Framework | Spring Boot 3.5 |
+|Security | Spring Security + JWT (jjwt)               
 | Database | Oracle Database 21c (XE) |
 | ORM | Spring Data JPA / Hibernate |
 | DB Migrations | Liquibase |
@@ -90,6 +94,8 @@ The project follows a clean **layered architecture** pattern:
 | Email Service | Brevo (Sendinblue) REST API |
 | Weather API | Open-Meteo (Geocoding + Forecast) |
 | Monitoring | Spring Boot Actuator |
+Testing | JUnit 5, Mockito |                     
+Logging | SLF4J |                        
 | Build Tool | Maven |
 
 ---
@@ -143,6 +149,7 @@ Create a `.env` file or set these variables in your environment before running:
 BREVO_API_KEY=your_brevo_api_key_here
 BREVO_SENDER_EMAIL=your_verified_sender@example.com
 BREVO_SENDER_NAME=Event Management System
+JWT_SECRET=your_jwt_secret_key_here
 ```
 
 ### 3. Configure the Database
@@ -189,6 +196,7 @@ All endpoints are documented and testable directly from the browser.
 | Categories | `/Category` | Create, Read, Update, Delete, Search, Paginate |
 | Reviews | `/Review` | Create, Read, Update, Delete, Search, Paginate |
 | Admin | `/Admin` | Create, Read, Update, Delete, Search, Paginate |
+|Auth | `/auth` | Register, Login → returns JWT token |
 
 ---
 
@@ -211,6 +219,10 @@ event.update.cron=0 0 * * * *
 
 # Actuator endpoints
 management.endpoints.web.exposure.include=health,beans,info
+
+# JWT   
+jwt.secret=your_secret_key
+jwt.expiration.ms=86400000
 ```
 
 ---
@@ -233,6 +245,51 @@ management.endpoints.web.exposure.include=health,beans,info
 - On event creation, the system geocodes the event location using Open-Meteo's Geocoding API
 - Then fetches current weather conditions (temperature + wind speed)
 - Data is stored with the event for attendee awareness
+
+🔐 Security     
+All API endpoints are protected using Spring Security with stateless 
+JWT-based authentication.
+
+Authentication Flow:
+1. User registers or logs in via /auth endpoint
+2. Server validates credentials and returns a signed JWT token
+3. Client includes the token in the Authorization header: Bearer <token>
+4. JwtAuthenticationFilter validates the token on every request
+5. Unauthorized requests are rejected with 401 Unauthorized
+
+Key components:
+- JwtTokenProvider   → generates and validates JWT tokens
+- JwtAuthFilter      → intercepts requests and sets security context
+- SecurityConfig     → defines the filter chain and public/protected routes
+- UserDetailsService → loads user data for authentication
+
+
+🧪 Testing         
+Core business logic is covered with unit tests using JUnit 5 and Mockito.
+
+What's tested:
+- Service layer logic (booking rules, payment validation, reward points)
+- Edge cases such as duplicate bookings, expired payments, capacity overflow
+- Mocked repository and external service calls using Mockito
+
+Run all tests:
+./mvnw test
+
+
+📋 Logging   
+Structured logging is implemented throughout the application using SLF4J.
+
+Logging covers:
+- Incoming request handling in controllers
+- Business logic execution in services
+- External API calls (weather, email)
+- Scheduled job execution (booking expiry, event status updates)
+- Exception handling and error tracking
+
+Log levels used:
+- INFO  → normal application flow and key events
+- WARN  → recoverable issues and unexpected states
+- ERROR → failures and exceptions with stack traces
 
 ---
 
@@ -287,6 +344,7 @@ src/
 │   │   ├── mapper/
 │   │   ├── repository/
 │   │   ├── searchCriteria/
+│   │   ├── security/
 │   │   ├── service/
 │   │   ├── specification/
 │   │   └── validator/
@@ -296,6 +354,7 @@ src/
 │           ├── db.changelog-master.xml
 │           └── db.changelog-changes.xml
 └── test/
+│   └── java/com/eventmanagement/
 ```
 
 ---
